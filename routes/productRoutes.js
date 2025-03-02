@@ -5,7 +5,16 @@ const productRouter = express.Router();
 productRouter.get('/api/products', async (req, res) => {
     try {
         const products = await Product.find({});
-        res.json(products);
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+productRouter.get('/api/products/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        res.status(200).json(product);
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }
