@@ -39,5 +39,22 @@ productRouter.post('/api/products', async (req, res) => {
     }
 });
 
+productRouter.put('/api/products/:id', async (req, res) => {
+    const { name, price, category, stock, description } = req.body;
+    const updatedProduct = {
+        name,
+        price,
+        category,
+        stock,
+        description,
+    };
+    try {
+        await Product.findByIdAndUpdate(req.params.id, updatedProduct);
+        res.status(200).json({ message: 'Product updated successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = productRouter;
 
