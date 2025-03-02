@@ -19,6 +19,14 @@ app.use(bodyParser.json());
 app.use(productRoutes);
 
 
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+app.use((err, req, res, next) => {
+    res.status(500).json({ message: 'Server error' });
+});
+
 
 //mongodb connection
 const connectDB = async () => {
@@ -31,6 +39,8 @@ const connectDB = async () => {
 };
 
 connectDB();
+
+
 
 app.get('/', (req, res) => {
     res.send('Product Inventory ApiS server is running');
