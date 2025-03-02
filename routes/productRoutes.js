@@ -4,16 +4,29 @@ const productRouter = express.Router();
 
 // Get all products
 productRouter.get('/api/products', async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 10, category, sort } = req.query;
+
+
+    category = category ? category.trim() : null;
+
+    console.log('Category:', category); // Debugging
+
+    const filter = category ? { category } : {};
+    const sortOptions = sort ? { price: sort === 'asc' ? 1 : -1 } : {};
+
     try {
-        const products = await Product.find({})
-            .skip((page - 1) * limit)
-            .limit(limit);
+        const products = await Product.find(filter)
+            .skip((Number(page) - 1) * Number(limit))
+            .limit(Number(limit))
+            .sort(sortOptions);
+
         res.status(200).json(products);
     } catch (err) {
+        console.error('Error:', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 // Get a product by id
 productRouter.get('/api/products/:id', async (req, res) => {
