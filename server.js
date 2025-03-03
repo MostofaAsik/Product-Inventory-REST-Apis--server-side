@@ -20,12 +20,6 @@ app.use(cors(
 app.use(bodyParser.json());
 
 
-
-
-
-
-
-
 //mongodb connection
 const connectDB = async () => {
     try {
