@@ -11,12 +11,16 @@ const PORT = process.env.PORT || 5000
 
 
 //middleware
-app.use(cors());
+app.use(cors(
+    {
+        origin: ['http://localhost:5000', 'https://product-inventory-rest-apis-mq5w78lgb-mostofaasiks-projects.vercel.app'],
+        credentials: true
+    }
+));
 app.use(bodyParser.json());
 
 
-//routes
-app.use(productRoutes);
+
 
 
 
@@ -34,9 +38,10 @@ const connectDB = async () => {
 
 connectDB();
 
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Route not found' });
-});
+//routes
+app.use('/api', productRoutes);
+
+
 
 app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Server error' });

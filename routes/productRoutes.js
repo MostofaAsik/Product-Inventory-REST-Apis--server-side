@@ -3,13 +3,11 @@ const Product = require('../models/Product');
 const productRouter = express.Router();
 
 // Get all products
-productRouter.get('/api/products', async (req, res) => {
-    let { page = 1, limit = 10, category, sort } = req.query;
-
-
+productRouter.get('/products', async (req, res) => {
+    let { page, limit, category, sort } = req.query;
     category = category ? category.trim() : null;
 
-    console.log('Category:', category); // Debugging
+
 
     const filter = category ? { category } : {};
     const sortOptions = sort ? { price: sort === 'asc' ? 1 : -1 } : {};
@@ -27,9 +25,8 @@ productRouter.get('/api/products', async (req, res) => {
     }
 });
 
-
 // Get a product by id
-productRouter.get('/api/products/:id', async (req, res) => {
+productRouter.get('/products/:id', async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         res.status(200).json(product);
@@ -39,17 +36,11 @@ productRouter.get('/api/products/:id', async (req, res) => {
 });
 
 // Create a product
-productRouter.post('/api/products', async (req, res) => {
+productRouter.post('/products', async (req, res) => {
     const { name, price, category, stock, description } = req.body;
-    console.log(req.body);
+
     try {
-        const newProduct = new Product({
-            name,
-            price,
-            category,
-            stock,
-            description,
-        });
+        const newProduct = new Product({ name, price, category, stock, description });
         console.log(newProduct);
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully' });
@@ -59,15 +50,9 @@ productRouter.post('/api/products', async (req, res) => {
 });
 
 // Update a product
-productRouter.put('/api/products/:id', async (req, res) => {
+productRouter.put('/products/:id', async (req, res) => {
     const { name, price, category, stock, description } = req.body;
-    const updatedProduct = {
-        name,
-        price,
-        category,
-        stock,
-        description,
-    };
+    const updatedProduct = { name, price, category, stock, description };
     try {
         await Product.findByIdAndUpdate(req.params.id, updatedProduct);
         if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
@@ -78,7 +63,7 @@ productRouter.put('/api/products/:id', async (req, res) => {
 });
 
 // Delete a product
-productRouter.delete('/api/products/:id', async (req, res) => {
+productRouter.delete('/products/:id', async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Product deleted successfully' });
@@ -88,4 +73,3 @@ productRouter.delete('/api/products/:id', async (req, res) => {
 });
 
 module.exports = productRouter;
-
